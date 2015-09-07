@@ -7,8 +7,31 @@
   <title>Parse Route</title>
   <meta name="description" content="Parse Route">
   <meta name="author" content="sawicki">
-  <style>
+  
+<!--   Calculates distance based on the waze livemap route URL
+Copyright (C) yyyy  name of author
 
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. -->
+
+  <style>
+.right {float: right;}
+.trbot  {
+   position: absolute;
+   right: 20px;
+   bottom: 20px;
+}
 #container
 {
 	margin:          0 auto;
@@ -19,6 +42,7 @@
 	border: 1px solid black;
 	padding: 20px;
 	word-wrap: break-word;
+	overflow: auto;
 	
 }
 h1 {
@@ -26,10 +50,11 @@ h1 {
     margin-left: 40px;
 } 
 td {width:80px;}
-table {
+table#t01 {
     border: 1px solid black;
     border-collapse: collapse;
 	overflow: hidden;
+	float: left;
     
 	
 }
@@ -52,7 +77,7 @@ background-color:  #777;
 
 <body>
 <div id=container>
-<h3>Put routing URL in following field</h3>
+<h3>Calculates "as the crow flies distance" from Waze Livemap share route URL</h3>
 <br>
 <br>
 
@@ -100,8 +125,12 @@ URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlStrin
     <td id="miles" class="answer" ></td> 
    </tr>
 </table>
-
-
+<div class=right>
+<a href="http://www.movable-type.co.uk/scripts/latlong.html" target="_blank">Link to equations</a>
+</div>
+<div class="trbot">
+<!-- <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL License</a> -->
+</div>
 <script>
 function testString() {
 	document.getElementById("urlString").value = "https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426";
