@@ -111,7 +111,7 @@ function testString() {
 function parseURL() {
 	var tempString, fromLat,fromLon,toLat,toLon,tempArray, urlString;
 	
-        urlString = document.getElementById("urlString").value;
+    urlString = document.getElementById("urlString").value;
 	fromLat = strExtract(urlString,"&from_lat=","&from_lon=");
 	fromLon = strExtract(urlString,"&from_lon=","&to_lat=");
 	toLat = strExtract(urlString,"&to_lat=","&to_lon=");
@@ -125,7 +125,7 @@ function parseURL() {
 	document.getElementById("googleFrom").innerHTML = fromLat + " " + fromLon; 
 	meters = distanceCalc(fromLat,fromLon,toLat,toLon);
 	document.getElementById("meters").innerHTML = meters.toFixed(2);
-        document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
+    document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
 	
 }	
 //*********************************************************************	
