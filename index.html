@@ -1,0 +1,206 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Parse Route</title>
+  <meta name="description" content="Parse Route">
+  <meta name="author" content="sawicki">
+  
+<!--   Calculates distance based on the waze livemap route URL
+Copyright (C) yyyy  name of author
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. -->
+
+  <style>
+.right {float: right;}
+.trbot  {
+   position: absolute;
+   right: 20px;
+   bottom: 20px;
+}
+#container
+{
+	margin:          0 auto;
+	padding-top:50px;
+	width:           683px;
+	position:        relative;
+	background-color: linen;
+	border: 1px solid black;
+	padding: 20px;
+	word-wrap: break-word;
+	overflow: auto;
+	
+}
+h1 {
+    color: maroon;
+    margin-left: 40px;
+} 
+td {width:80px;}
+table#t01 {
+    border: 1px solid black;
+    border-collapse: collapse;
+	overflow: hidden;
+	float: left;
+    
+	
+}
+table#t01 tr:nth-child(even) {
+    background-color: #eee;
+}
+table#t01 tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+body{
+
+margin:50px auto 0 auto;
+
+background-color:  #777;
+
+}
+</style>
+</head>
+
+<body>
+<div id=container>
+<h3>Calculates "as the crow flies distance" from Waze Livemap share route URL</h3>
+<br>
+<br>
+
+<button  onclick="parseURL()">Parse URL</button> Button not needed except on older browsers<br><br>
+<button  onclick="testString()">Test String</button> Will pull in test string and execute<br><br>
+URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlString" size="90" placeholder="Enter Route URL Here">
+
+<br>
+<br>
+<br>
+
+
+
+<table id="t01" style="width:40%">
+  <tr>
+    <td>To Lat: </td>
+    <td id="toLat" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>To Lon: </td>
+    <td id="toLon" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>From Lat: </td>
+    <td id="fromLat" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>From Lon: </td>
+    <td id="fromLon" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>Google To:</td>
+    <td id="googleTo" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td> Google From:</td>
+    <td id="googleFrom" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>Meters </td>
+    <td id="meters" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td>Miles</td>
+    <td id="miles" class="answer" ></td> 
+   </tr>
+</table>
+<div class=right>
+<a href="http://www.movable-type.co.uk/scripts/latlong.html" target="_blank">Link to equations</a>
+</div>
+<div class="trbot">
+<!-- <a href="http://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPL License</a> -->
+</div>
+<script>
+function testString() {
+	document.getElementById("urlString").value = "https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426";
+	parseURL();
+}
+
+function parseURL() {
+	var tempString, fromLat,fromLon,toLat,toLon,tempArray, urlString;
+	
+    urlString = document.getElementById("urlString").value;
+	fromLat = strExtract(urlString,"&from_lat=","&from_lon=");
+	fromLon = strExtract(urlString,"&from_lon=","&to_lat=");
+	toLat = strExtract(urlString,"&to_lat=","&to_lon=");
+	toLon = strReturnRight(urlString,"&to_lon=")
+	
+	document.getElementById("fromLat").innerHTML = fromLat;
+	document.getElementById("fromLon").innerHTML = fromLon;
+	document.getElementById("toLat").innerHTML = toLat;
+	document.getElementById("toLon").innerHTML = toLon; 
+	document.getElementById("googleTo").innerHTML = toLat.toString() + "  " + toLon.toString(); 
+	document.getElementById("googleFrom").innerHTML = fromLat + " " + fromLon; 
+	meters = distanceCalc(fromLat,fromLon,toLat,toLon);
+	document.getElementById("meters").innerHTML = meters.toFixed(2);
+    document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
+	
+}	
+//*********************************************************************	
+// helper function to return to right of embedded string
+function strReturnRight(inString,findString) {
+	var strTempArray = inString.split(findString)
+	return strTempArray[1]
+} 
+
+//*********************************************************************	
+// helper function to return string between two other strings
+function strExtract(inString,strFirst, strSecond) {
+	var strTempArray = inString.split(strFirst)
+	strTempArray = strTempArray[1].split(strSecond)
+	return strTempArray[0]
+} 
+
+//*********************************************************************	
+// code for the following came from  http://www.movable-type.co.uk/scripts/latlong.html
+function distanceCalc(lat1,lon1,lat2,lon2) {
+	var R = 6371000; // metres
+
+	var phi1 = toRad(lat1);
+	var phi2 = toRad(lat2);
+
+	var deltang = toRad(lat2-lat1);
+	var deltlamb = toRad(lon2-lon1);
+		
+	var a = Math.sin(deltang/2) * Math.sin(deltang/2) +
+			Math.cos(phi1) * Math.cos(phi2) *
+			Math.sin(deltlamb/2) * Math.sin(deltlamb/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+	return  R * c;
+
+}
+
+
+//*********************************************************************		
+	 // Converts numeric degrees to radians
+function toRad(Value){
+	return Value * Math.PI / 180;
+}
+
+</script>
+
+  </div>
+</body>
+</html>
