@@ -104,23 +104,19 @@ URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlStrin
 
 <script>
 function testString() {
-document.getElementById("urlString").value = "https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426";
-parseURL();
+	document.getElementById("urlString").value = "https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426";
+	parseURL();
 }
 
 function parseURL() {
-	var tempString, fromLat,fromLon,toLat,toLon,tempArray;
+	var tempString, fromLat,fromLon,toLat,toLon,tempArray, urlString;
 	
 	
-    var urlString = document.getElementById("urlString").value;
-	alert(urlString)
-	debugger;
+    urlString = document.getElementById("urlString").value;
 	fromLat = strExtract(urlString,"&from_lat=","&from_lon=");
 	fromLon = strExtract(urlString,"&from_lon=","&to_lat=");
 	toLat = strExtract(urlString,"&to_lat=","&to_lon=");
-	tempArray = urlString.split("&to_lon=")
 	toLon = strReturnRight(urlString,"&to_lon=")
-	
 	
 	document.getElementById("fromLat").innerHTML = fromLat;
 	document.getElementById("fromLon").innerHTML = fromLon;
@@ -132,20 +128,20 @@ function parseURL() {
 	document.getElementById("meters").innerHTML = meters.toFixed(2);
     document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
 	
-	
+}	
 //*********************************************************************	
 // helper function to return to right of embedded string
 function strReturnRight(inString,findString) {
-var strTempArray = inString.split(findString)
-return strTempArray[1]
+	var strTempArray = inString.split(findString)
+	return strTempArray[1]
 } 
 
 //*********************************************************************	
 // helper function to return string between two other strings
 function strExtract(inString,strFirst, strSecond) {
-var strTempArray = inString.split(strFirst)
-strTempArray = strTempArray[1].split(strSecond)
-return strTempArray[0]
+	var strTempArray = inString.split(strFirst)
+	strTempArray = strTempArray[1].split(strSecond)
+	return strTempArray[0]
 } 
 
 //*********************************************************************	
@@ -153,29 +149,28 @@ return strTempArray[0]
 function distanceCalc(lat1,lon1,lat2,lon2) {
 	var R = 6371000; // metres
 
-var phi1 = toRad(lat1);
-var phi2 = toRad(lat2);
+	var phi1 = toRad(lat1);
+	var phi2 = toRad(lat2);
 
-var deltang = toRad(lat2-lat1);
-var deltlamb = toRad(lon2-lon1);
-	
-var a = Math.sin(deltang/2) * Math.sin(deltang/2) +
-        Math.cos(phi1) * Math.cos(phi2) *
-        Math.sin(deltlamb/2) * Math.sin(deltlamb/2);
-var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+	var deltang = toRad(lat2-lat1);
+	var deltlamb = toRad(lon2-lon1);
+		
+	var a = Math.sin(deltang/2) * Math.sin(deltang/2) +
+			Math.cos(phi1) * Math.cos(phi2) *
+			Math.sin(deltlamb/2) * Math.sin(deltlamb/2);
+	var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-return  R * c;
+	return  R * c;
 
 }
 
 
 //*********************************************************************		
 	 // Converts numeric degrees to radians
-    function toRad(Value) 
-    {
-        return Value * Math.PI / 180;
-    }
+function toRad(Value){
+	return Value * Math.PI / 180;
 }
+
 </script>
 
   </div>
