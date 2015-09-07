@@ -7,12 +7,6 @@
   <title>Parse Route</title>
   <meta name="description" content="Parse Route">
   <meta name="author" content="sawicki">
-
-  <link rel="stylesheet" href="css/styles.css?v=1.0">
-
-  <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
   <style>
 
 #container
@@ -71,14 +65,6 @@ URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlStrin
 <br>
 
 
-<!-- <input type="text" id="toLat" value="TBD"> To Lat: <br>
-<input type="text" id="toLon" value="TBD"> To Lon: <br>
-<input type="text" id="fromLat" value="TBD"> From Lat: <br>
-<input type="text" id="fromLon" value="TBD"> From Lon: <br>
-<input type="text" id="googleTo" value="TBD"> Google To: <br>
-<input type="text" id="googleFrom" value="TBD"> Google From: <br>
-<input type="text" id="meters" value="TBD"> Meters <br>
-<input type="text" id="miles" value="TBD"> Miles <br> -->
 
 <table id="t01" style="width:40%">
   <tr>
@@ -121,63 +107,55 @@ function testString() {
 document.getElementById("urlString").value = "https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426";
 parseURL();
 }
+
 function parseURL() {
-	var tempString;
-	var fromLat;
-	var fromLon;
+	var tempString, fromLat,fromLon,toLat,toLon,tempArray;
+	
 	
     var urlString = document.getElementById("urlString").value;
+	alert(urlString)
+	debugger;
+	fromLat = strExtract(urlString,"&from_lat=","&from_lon=");
+	fromLon = strExtract(urlString,"&from_lon=","&to_lat=");
+	toLat = strExtract(urlString,"&to_lat=","&to_lon=");
+	tempArray = urlString.split("&to_lon=")
+	toLon = strReturnRight(urlString,"&to_lon=")
 	
-	//alert("This is a stub until the function is finished  "+urlString);
 	
-	var tempArray = urlString.split("&from_lat=");
-	
-	tempArray = tempArray[1].split("&from_lon=");
-	fromLat = tempArray[0];
-	//alert("fromLat "+fromLat);
-	
-	document.getElementById("fromLat").innerHTML = fromLat;
-	 
-	tempString = tempArray[1];
-	//alert("tempstring " + tempString);
-   
-	tempArray = tempString.split("&to_lat=");
-	 fromLon = tempArray[0];
-	//alert("fromLon "+fromLon)
-	
-		
-	 
-	tempArray = tempArray[1].split("&to_lon=");
-	var toLat = tempArray[0];
-	var toLon = tempArray[1];
 	document.getElementById("fromLat").innerHTML = fromLat;
 	document.getElementById("fromLon").innerHTML = fromLon;
 	document.getElementById("toLat").innerHTML = toLat;
 	document.getElementById("toLon").innerHTML = toLon; 
 	document.getElementById("googleTo").innerHTML = toLat.toString() + "  " + toLon.toString(); 
 	document.getElementById("googleFrom").innerHTML = fromLat + " " + fromLon; 
-	 
-	/*document.getElementById("fromLat").value = fromLat;
-	document.getElementById("fromLon").value = fromLon;
-	document.getElementById("toLat").value = toLat;
-	document.getElementById("toLon").value = toLon; 
-	document.getElementById("googleTo").value = toLat.toString() + "  " + toLon.toString(); 
-	document.getElementById("googleFrom").value = fromLat + " " + fromLon; */
+	meters = distanceCalc(fromLat,fromLon,toLat,toLon)
+	document.getElementById("meters").innerHTML = meters.toFixed(2);
+    document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
 	
-	/*alert(tempArray[0]);
-	alert(tempArray[1]); */
 	
-	var lat1 = fromLat;
-	var lat2 = toLat;
-	var lon1 = fromLon;
-	var lon2 = toLon;
-	
-//alert("test1");
+//*********************************************************************	
+// helper function to return to right of embedded string
+function strReturnRight(inString,findString) {
+var strTempArray = inString.split(findString)
+return strTempArray[1]
+} 
+
+//*********************************************************************	
+// helper function to return string between two other strings
+function strExtract(inString,strFirst, strSecond) {
+var strTempArray = inString.split(strFirst)
+strTempArray = strTempArray[1].split(strSecond)
+return strTempArray[0]
+} 
+
+//*********************************************************************	
+// code for the following came from  http://www.movable-type.co.uk/scripts/latlong.html
+function distanceCalc(lat1,lon1,lat2,lon2) {
 	var R = 6371000; // metres
-//	alert("test2");
+
 var phi1 = toRad(lat1);
 var phi2 = toRad(lat2);
-//alert("test3");
+
 var deltang = toRad(lat2-lat1);
 var deltlamb = toRad(lon2-lon1);
 	
@@ -185,15 +163,13 @@ var a = Math.sin(deltang/2) * Math.sin(deltang/2) +
         Math.cos(phi1) * Math.cos(phi2) *
         Math.sin(deltlamb/2) * Math.sin(deltlamb/2);
 var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-//alert("test4");
-var meters= R * c;
-document.getElementById("meters").innerHTML = meters.toFixed(2);
-document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
-alert("distance =  " + d);
-	 /*
-	//https://www.waze.com/livemap?lon=-82.65426&lat=27.86516&zoom=17&from_lat=27.85021&from_lon=-82.6577&to_lat=27.86516&to_lon=-82.65426
-	*/
-	
+
+return  R * c;
+
+}
+
+
+//*********************************************************************		
 	 // Converts numeric degrees to radians
     function toRad(Value) 
     {
