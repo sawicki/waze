@@ -49,7 +49,8 @@ h1 {
     color: maroon;
     margin-left: 40px;
 } 
-td {width:80px;}
+td {width:90px;}
+td.answer {width:150px;}
 table#t01 {
     border: 1px solid black;
     border-collapse: collapse;
@@ -91,7 +92,7 @@ URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlStrin
 
 
 
-<table id="t01" style="width:40%">
+<table id="t01" style="width:75%">
   <tr>
     <td>To Lat: </td>
     <td id="toLat" class="answer" ></td> 
@@ -115,6 +116,14 @@ URL String: <input  type="text"  onpaste="setTimeout(parseURL,10);" id="urlStrin
    <tr>
     <td> Google From:</td>
     <td id="googleFrom" class="answer" ></td> 
+   </tr>
+    <tr>
+    <td>Waze Route 1:</td>
+    <td id="waze1" class="answer" ></td> 
+   </tr>
+   <tr>
+    <td> Waze Route 2:</td>
+    <td id="waze2" class="answer" ></td> 
    </tr>
    <tr>
     <td>Meters </td>
@@ -151,11 +160,17 @@ function parseURL() {
 	document.getElementById("toLat").innerHTML = toLat;
 	document.getElementById("toLon").innerHTML = toLon; 
 	document.getElementById("googleTo").innerHTML = toLat.toString() + "  " + toLon.toString(); 
-	document.getElementById("googleFrom").innerHTML = fromLat + " " + fromLon; 
+	document.getElementById("googleFrom").innerHTML = fromLat + " " + fromLon;
+
+	
+	document.getElementById("waze2").innerHTML = "http://waze.to/?ll="+toLat+","+toLon+"&navigate=yes";
+	document.getElementById("waze1").innerHTML = "http://waze.to/?ll="+fromLat+","+fromLon+"&navigate=yes"; 
+	
+	
 	meters = distanceCalc(fromLat,fromLon,toLat,toLon);
 	document.getElementById("meters").innerHTML = meters.toFixed(2);
     document.getElementById("miles").innerHTML = (0.000621371* meters).toFixed(2);
-	
+	//http://waze.to/?ll=28.01565,-82.73798&navigate=yes
 }	
 //*********************************************************************	
 // helper function to return to right of embedded string
